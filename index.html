@@ -723,5 +723,55 @@
 
         initUsers();
     </script>
+    <!-- Firebase & Cloudinary 통합 스크립트 -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword 
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    getDocs 
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // 1. 발급받으신 실제 Firebase 설정값
+  const firebaseConfig = {
+    apiKey: "AIzaSyCc6s1XMlP0ZO27SpAtWpryDVvMeoxeM_0",
+    authDomain: "jipgagosipda-4d91e.firebaseapp.com",
+    projectId: "jipgagosipda-4d91e",
+    storageBucket: "jipgagosipda-4d91e.firebasestorage.app",
+    messagingSenderId: "915657169164",
+    appId: "1:915657169164:web:6f06c03437a6fe08235129"
+  };
+
+  // 2. Firebase 초기화
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // 3. Cloudinary 정보 (UPLOAD_PRESET 값만 Cloudinary에서 복사한 이름으로 수정하세요)
+  const CLOUD_NAME = "qtbo9ktr";
+  const UPLOAD_PRESET = "ml_default"; 
+
+  // 4. Cloudinary 이미지 업로드 함수
+  async function uploadImageToCloudinary(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await response.json();
+    return data.secure_url; // 업로드된 이미지 URL 반환
+  }
+</script>
+
 </body>
 </html>
