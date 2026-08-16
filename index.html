@@ -755,6 +755,25 @@
             }
         };
     </script>
+        // [추가] 관리자 새로고침 튕김 방지 처리
+    const savedRole = window.localStorage.getItem('userRole');
+    if (savedRole === 'admin') {
+        switchView('admin-dashboard-view');
+    }
+
+    // 관리자 접속 버튼 클릭 시 권한 저장 및 삭제 감지
+    document.addEventListener("click", function(e) {
+        if (e.target && e.target.innerText.includes("관리자 접속")) {
+            window.localStorage.setItem('userRole', 'admin');
+        }
+        if (e.target && e.target.innerText.includes("일반 로그인 화면으로 이동")) {
+            window.localStorage.removeItem('userRole');
+        }
+        if (e.target && e.target.innerText.includes("로그아웃")) {
+            window.localStorage.removeItem('userRole');
+        }
+    });
+
 </body>
 </html>
 
