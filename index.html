@@ -106,6 +106,7 @@
                 <h2 style="margin: 0; color: #007bff; font-size: 1.2em;">홈 메인 대시보드</h2>
                 <div>
                     <span id="user-home-display" style="font-weight: bold; font-size: 0.85em; margin-right: 5px;"></span>
+                    <button onclick="switchView('edit-profile-view')" class="warning" style="width: auto; padding: 4px 8px; font-size: 0.8em;">비밀번호 변경</button>
                     <button onclick="userLogout()" class="danger" style="width: auto; padding: 4px 8px; font-size: 0.8em;">로그아웃</button>
                 </div>
             </div>
@@ -335,7 +336,7 @@
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             const container = document.getElementById('main-container');
             
-            if (['admin-dashboard-view', 'board-view', 'home-view', 'user-chat-view', 'daily-view'].includes(viewId)) {
+            if (['admin-dashboard-view', 'board-view', 'home-view', 'user-chat-view', 'daily-view', 'edit-profile-view'].includes(viewId)) {
                 container.classList.add('wide-mode');
             } else {
                 container.classList.remove('wide-mode');
@@ -377,6 +378,10 @@
                 user.loginCount = (user.loginCount || 0) + 1;
                 saveData('users', users);
                 currentUser = user;
+                
+                // 새로고침 방지(세션 유지) 저장
+                window.localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
                 document.getElementById('user-home-display').innerText = `${user.name}(${user.id})`;
                 alert(`${user.name}님 환영합니다!`);
                 switchView('home-view');
@@ -665,6 +670,7 @@
             `).join('');
         }
 
+        // [핵심 기능 1] 비밀번호 변경 시 관리자 목록(users)과 완벽 연동
         function updatePassword() {
             const newPw = document.getElementById('edit-pw').value;
             const newPwConfirm = document.getElementById('edit-pw-confirm').value;
@@ -673,15 +679,21 @@
             if (newPw !== newPwConfirm) return alert("비밀번호 확인이 일치하지 않습니다.");
 
             let users = getData('users');
-            let user = users.find(u => u.id === currentUser.id);
-            if (user) {
-                user.pw = newPw;
+            let userIndex = users.findIndex(u => u.id === currentUser.id);
+            
+            if (userIndex !== -1) {
+                users[userIndex].pw = newPw; // 관리자 데이터 반영
+                saveData('users', users);    // 로컬스토리지 동기화
+                
                 currentUser.pw = newPw;
-                saveData('users', users);
-                alert("비밀번호가 변경되었습니다!");
+                window.localStorage.setItem('currentUser', JSON.stringify(currentUser)); // 세션 갱신
+
+                alert("비밀번호가 성공적으로 변경되었습니다!");
                 document.getElementById('edit-pw').value = '';
                 document.getElementById('edit-pw-confirm').value = '';
                 switchView('home-view');
+            } else {
+                alert("사용자 정보를 찾을 수 없습니다.");
             }
         }
 
@@ -718,50 +730,31 @@
             }
         }
 
-        function userLogout() { currentUser = null; switchView('login-view'); }
-        function adminLogout() { switchView('login-view'); }
+        function userLogout() { 
+            currentUser = null; 
+            window.localStorage.removeItem('currentUser'); // 세션 삭제
+            switchView('login-view'); 
+        }
+        
+        function adminLogout() { 
+            switchView('login-view'); 
+        }
 
-        initUsers();
+        // [핵심 기능 2] 새로고침 시 튕김 방지 (로그인 세션 자동 복구)
+        window.onload = function() {
+            initUsers();
+            const savedUser = window.localStorage.getItem('currentUser');
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    document.getElementById('user-home-display').innerText = `${currentUser.name}(${currentUser.id})`;
+                    switchView('home-view');
+                } catch (e) {
+                    window.localStorage.removeItem('currentUser');
+                }
+            }
+        };
     </script>
-  <!-- Firebase & Cloudinary 보안 강화 통합 스크립트 -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  // 1. Firebase 안전 설정
-  const firebaseConfig = {
-    apiKey: "AIzaSyCc6s1XMlP0ZO27SpAtWpryDVvMeoxeM_0",
-    authDomain: "jipgagosipda-4d91e.firebaseapp.com",
-    projectId: "jipgagosipda-4d91e",
-    storageBucket: "jipgagosipda-4d91e.firebasestorage.app",
-    messagingSenderId: "915657169164",
-    appId: "1:915657169164:web:6f06c03437a6fe08235129"
-  };
-
-  // 2. Firebase 초기화
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // 3. Cloudinary 안전 업로드 설정 (비밀번호 원천 차단)
-  const CLOUD_NAME = "qtbo9ktr";
-  const UPLOAD_PRESET = "ml_default";
-
-  async function uploadImageToCloudinary(file) {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", UPLOAD_PRESET);
-
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-      method: "POST",
-      body: formData
-    });
-
-    const data = await response.json();
-    return data.secure_url;
-  }
-</script>
-
 </body>
 </html>
+
