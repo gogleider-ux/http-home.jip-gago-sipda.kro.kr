@@ -754,8 +754,8 @@
                 }
             }
         };
-    <script>
-// 1. 페이지가 새로고침되었을 때 로그인 상태 복구
+<script>
+// 1. 페이지 새로고침 시 로그인 및 관리자 세션 복구
 window.onload = function() {
     if (typeof initUsers === 'function') {
         initUsers();
@@ -783,7 +783,7 @@ window.onload = function() {
     }
 };
 
-// 2. 관리자 로그인 버튼을 누를 때 실행될 함수 (버튼 충돌 없음)
+// 2. 관리자 로그인 버튼(최고 관리자 인증)에 연결할 함수
 function handleAdminLogin() {
     window.localStorage.setItem('userRole', 'admin');
     switchView('admin-dashboard-view');
@@ -797,6 +797,5 @@ function handleLogout() {
 }
 </script>
 
-</body>
 </html>
 
