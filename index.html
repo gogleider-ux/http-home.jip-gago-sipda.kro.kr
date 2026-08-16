@@ -754,25 +754,50 @@
                 }
             }
         };
-    </script>
-        // [추가] 관리자 새로고침 튕김 방지 처리
-    const savedRole = window.localStorage.getItem('userRole');
-    if (savedRole === 'admin') {
-        switchView('admin-dashboard-view');
+    <script>
+// 1. 페이지가 새로고침되었을 때 관리자 권한이 있다면 관리자 화면으로 바로 이동합니다.
+window.onload = function() {
+    // 기존에 있던 일반 회원 로그인 복구 코드가 있다면 유지됩니다.
+    if (typeof initUsers === 'function') {
+        initUsers();
+    }
+    const savedUser = window.localStorage.getItem('currentUser');
+    if (savedUser) {
+        try {
+            currentUser = JSON.parse(savedUser);
+            var homeDisplay = document.getElementById('user-home-display');
+            if (homeDisplay) {
+                homeDisplay.innerText = `${currentUser.name}님 환영합니다`;
+            }
+            switchView('home-view');
+        } catch (e) {
+            window.localStorage.removeItem('currentUser');
+        }
     }
 
-    // 관리자 접속 버튼 클릭 시 권한 저장 및 삭제 감지
-    document.addEventListener("click", function(e) {
-        if (e.target && e.target.innerText.includes("관리자 접속")) {
-            window.localStorage.setItem('userRole', 'admin');
-        }
-        if (e.target && e.target.innerText.includes("일반 로그인 화면으로 이동")) {
-            window.localStorage.removeItem('userRole');
-        }
-        if (e.target && e.target.innerText.includes("로그아웃")) {
-            window.localStorage.removeItem('userRole');
-        }
-    });
+    // [핵심] 관리자 권한이 있는 경우 원래 쓰시던 switchView 함수로 관리자 화면을 엽니다.
+    const savedRole = window.localStorage.getItem('adminLoggedIn') || window.localStorage.getItem('userRole');
+    if (savedRole === 'admin') {
+        // ID를 찾을 필요 없이 기존에 관리자 화면을 열 때 쓰던 뷰 이름('admin-view' 또는 본인 코드의 관리자 ID)을 넣습니다.
+        // 만약 관리자 화면 ID가 다르다면 아래 글자만 수정하시면 됩니다.
+        switchView('admin-dashboard-view'); 
+    }
+};
+
+// 2. 관리자 접속 및 로그아웃 시 권한을 자동으로 저장/삭제합니다.
+document.addEventListener("click", function(e) {
+    if (e.target && e.target.innerText.includes("관리자 접속")) {
+        window.localStorage.setItem('userRole', 'admin');
+    }
+    if (e.target && e.target.innerText.includes("일반 로그인 화면으로 이동")) {
+        window.localStorage.removeItem('userRole');
+    }
+    if (e.target && e.target.innerText.includes("로그아웃")) {
+        window.localStorage.removeItem('userRole');
+    }
+});
+</script>
+
 
 </body>
 </html>
