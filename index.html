@@ -1,741 +1,767 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>home.jip-gago-sipda 통합 플랫폼</title>
-<style>
-body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f4f4f9; padding: 20px 0; box-sizing: border-box; }
-.container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 90%; max-width: 400px; box-sizing: border-box; }
-.container.wide-mode { max-width: 850px; }
-.view { display: none; }
-.active { display: block; }
-.input-group { margin-bottom: 12px; text-align: left; }
-.input-group label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 0.85em; }
-.input-group input, .input-group select, .input-group textarea { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 1em; -webkit-appearance: none; }
-.input-group textarea { height: 90px; resize: vertical; }
-.captcha-box { display: flex; align-items: center; background-color: #f9f9f9; border: 1px solid #d3d3d3; border-radius: 4px; padding: 10px; margin-bottom: 12px; }
-.captcha-box input { width: 22px; height: 22px; margin-right: 8px; }
-.captcha-area { display: flex; align-items: center; justify-content: space-between; background: #e9ecef; padding: 8px 12px; border-radius: 4px; margin-bottom: 12px; }
-.captcha-code { font-weight: bold; font-size: 1.1em; color: #d9534f; letter-spacing: 2px; }
-button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 5px; font-size: 1em; }
-button.success { background-color: #28a745; }
-button.danger { background-color: #dc3545; }
-button.warning { background-color: #ffc107; color: #333; }
-.nav-link { text-align: center; margin-top: 15px; font-size: 0.85em; color: #555; cursor: pointer; text-decoration: underline; padding: 8px; }
-.admin-link { margin-top: 20px; padding-top: 12px; border-top: 1px solid #eee; text-align: center; font-size: 0.85em; color: #d9534f; cursor: pointer; font-weight: bold; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>home.jip-gago-sipda 통합 플랫폼</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f4f4f9; padding: 20px 0; box-sizing: border-box; }
+        .container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 90%; max-width: 400px; box-sizing: border-box; }
+        .container.wide-mode { max-width: 850px; }
+        .view { display: none; }
+        .active { display: block; }
+        .input-group { margin-bottom: 12px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 0.85em; }
+        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 1em; -webkit-appearance: none; }
+        .input-group textarea { height: 90px; resize: vertical; }
+        .captcha-box { display: flex; align-items: center; background-color: #f9f9f9; border: 1px solid #d3d3d3; border-radius: 4px; padding: 10px; margin-bottom: 12px; }
+        .captcha-box input { width: 22px; height: 22px; margin-right: 8px; }
+        .captcha-area { display: flex; align-items: center; justify-content: space-between; background: #e9ecef; padding: 8px 12px; border-radius: 4px; margin-bottom: 12px; }
+        .captcha-code { font-weight: bold; font-size: 1.1em; color: #d9534f; letter-spacing: 2px; }
+        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 5px; font-size: 1em; }
+        button.success { background-color: #28a745; }
+        button.danger { background-color: #dc3545; }
+        button.warning { background-color: #ffc107; color: #333; }
+        .nav-link { text-align: center; margin-top: 15px; font-size: 0.85em; color: #555; cursor: pointer; text-decoration: underline; padding: 8px; }
+        .admin-link { margin-top: 20px; padding-top: 12px; border-top: 1px solid #eee; text-align: center; font-size: 0.85em; color: #d9534f; cursor: pointer; font-weight: bold; }
+        
+        .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px; }
+        .home-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        @media (max-width: 600px) { .home-card-grid { grid-template-columns: 1fr; } }
+        .card { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center; }
+        .card h4 { margin-top: 0; color: #333; }
+        .card p { font-size: 0.85em; color: #666; margin-bottom: 15px; }
 
-.header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px; }
-.home-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-@media (max-width: 600px) { .home-card-grid { grid-template-columns: 1fr; } }
-.card { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center; }
-.card h4 { margin-top: 0; color: #333; }
-.card p { font-size: 0.85em; color: #666; margin-bottom: 15px; }
+        .notice-box { background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+        .notice-item { background: #fff; border: 1px solid #ffe0b2; padding: 10px; border-radius: 4px; margin-top: 8px; }
+        .cs-box { background: #eef7ff; border: 1px solid #b8daff; border-radius: 8px; padding: 15px; text-align: center; margin-top: 10px; }
 
-.notice-box { background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
-.notice-item { background: #fff; border: 1px solid #ffe0b2; padding: 10px; border-radius: 4px; margin-top: 8px; }
-.cs-box { background: #eef7ff; border: 1px solid #b8daff; border-radius: 8px; padding: 15px; text-align: center; margin-top: 10px; }
+        .chat-box { height: 300px; border: 1px solid #ddd; border-radius: 4px; padding: 10px; overflow-y: auto; background: #fafafa; display: flex; flex-direction: column; gap: 8px; }
+        .chat-msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 0.9em; word-break: break-all; }
+        .chat-msg.user { background: #007bff; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-msg.admin { background: #e9ecef; color: #333; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-msg .sender { font-size: 0.75em; display: block; margin-bottom: 2px; opacity: 0.8; }
 
-.chat-box { height: 300px; border: 1px solid #ddd; border-radius: 4px; padding: 10px; overflow-y: auto; background: #fafafa; display: flex; flex-direction: column; gap: 8px; }
-.chat-msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 0.9em; word-break: break-all; }
-.chat-msg.user { background: #007bff; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-.chat-msg.admin { background: #e9ecef; color: #333; align-self: flex-start; border-bottom-left-radius: 2px; }
-.chat-msg .sender { font-size: 0.75em; display: block; margin-bottom: 2px; opacity: 0.8; }
-
-.post-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 15px; margin-bottom: 20px; }
-.media-preview { max-width: 100%; max-height: 250px; border-radius: 6px; margin-top: 8px; display: block; }
-
-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85em; }
-th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-th { background-color: #007bff; color: white; }
-.btn-del { background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
-</style>
+        .post-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 15px; margin-bottom: 20px; }
+        .media-preview { max-width: 100%; max-height: 250px; border-radius: 6px; margin-top: 8px; display: block; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85em; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #007bff; color: white; }
+        .btn-del { background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
+    </style>
 </head>
 <body>
 
-<div id="main-container" class="container">
-
-<!-- 1. 로그인 화면 -->
-<div id="login-view" class="view active">
-<h2 style="text-align: center; margin-top: 0;">로그인</h2>
-<form id="login-form" onsubmit="return false;">
-<div class="input-group"><label>ID</label><input type="text" id="log-id" autocomplete="off"></div>
-<div class="input-group"><label>PW</label><input type="password" id="log-pw" autocomplete="off"></div>
-<div class="captcha-box">
-<input type="checkbox" id="captcha-check">
-<label for="captcha-check" style="font-size: 0.85em;">로봇이 아닙니다.</label>
-</div>
-<button type="button" onclick="handleLogin()">로그인 접속</button>
-</form>
-<div class="nav-link" onclick="switchView('signup-view')">회원이 아니신가요? 회원가입 하기</div>
-<div class="admin-link" onclick="switchView('admin-login-view')">관리자이신가요?</div>
-</div>
-
-<!-- 2. 회원가입 화면 -->
-<div id="signup-view" class="view">
-<h2 style="text-align: center; margin-top: 0;">신규 회원가입</h2>
-<form id="signup-form" onsubmit="return false;">
-<div class="input-group"><label>아이디</label><input type="text" id="reg-id"></div>
-<div class="input-group"><label>비밀번호 (4자리 이상)</label><input type="password" id="reg-pw"></div>
-<div class="input-group"><label>이름</label><input type="text" id="reg-name"></div>
-<div class="input-group"><label>전화번호 (01012345678)</label><input type="tel" id="reg-phone" placeholder="01012345678" maxlength="11"></div>
-<div class="input-group"><label>생년월일</label><input type="date" id="reg-birth"></div>
-<div class="input-group">
-<label>성별</label>
-<select id="reg-gender">
-<option value="">선택하세요</option>
-<option value="남">남</option>
-<option value="여">여</option>
-</select>
-</div>
-<div class="captcha-area">
-<span>보안코드: <span id="signup-captcha-display" class="captcha-code">0000</span></span>
-</div>
-<div class="input-group">
-<label>위 보안코드를 입력하세요</label>
-<input type="text" id="signup-captcha-input" maxlength="4">
-</div>
-<button type="button" onclick="handleSignup()" class="success">회원가입 완료</button>
-</form>
-<div class="nav-link" onclick="switchView('login-view')">[로그인 화면으로 돌아가기]</div>
-</div>
-
-<!-- 3. 메인 홈 화면 -->
-<div id="home-view" class="view">
-<div class="header-bar">
-<h2 style="margin: 0; color: #007bff; font-size: 1.2em;">홈 메인 대시보드</h2>
-<div>
-<span id="user-home-display" style="font-weight: bold; font-size: 0.85em; margin-right: 5px;"></span>
-<button onclick="userLogout()" class="danger" style="width: auto; padding: 4px 8px; font-size: 0.8em;">로그아웃</button>
-</div>
-</div>
-
-<!-- 공지사항 란 -->
-<div class="notice-box">
-<h4 style="margin:0; color:#d9534f;">📢 시스템 전체 공지사항</h4>
-<div id="home-notice-list" style="margin-top:10px;"></div>
-</div>
-
-<div class="home-card-grid">
-<div class="card">
-<h4>일상 공유하기</h4>
-<p style="font-size: 0.8em; color: #555;">타인과 자신의 일상이 담긴 사진을 공유하며 소통하세요.</p>
-<button class="success" onclick="switchView('daily-view')">일상 공유하기 바로가기</button>
-</div>
-<div class="card">
-<h4>통합 커뮤니티</h4>
-<p>게시글을 공유하고 의견을 나눕니다.</p>
-<button onclick="switchView('board-view')">글쓰기 바로가기</button>
-</div>
-</div>
-
-<div class="cs-box">
-<h3 style="margin: 0; color: #0056b3;">🎧 1:1 고객센터</h3>
-<p>서비스 이용 중 불편한 점은 관리자와 1:1 채팅이 가능합니다.</p>
-<button onclick="switchView('user-chat-view')" class="warning">관리자와 1:1 채팅하기</button>
-</div>
-</div>
-
-<!-- 4. 일상 공유하기 화면 -->
-<div id="daily-view" class="view">
-<div class="header-bar">
-<h2 style="margin: 0; color: #28a745;">📷 일상 공유하기</h2>
-<button onclick="switchView('home-view')" style="width: auto; padding: 4px 8px; font-size: 0.8em;">홈으로</button>
-</div>
-<p style="font-size: 0.85em; color: #666; text-align: center;">타인과 자신의 일상이 담긴 사진을 공유하며 소통하세요.</p>
-
-<div style="background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 6px; margin-bottom: 25px;">
-<h4 style="margin-top: 0;">새 일상 올리기</h4>
-<div class="input-group"><label>일상 사진 첨부</label><input type="file" id="daily-file" accept="image/*"></div>
-<div class="input-group"><textarea id="daily-desc" placeholder="짧은 설명글을 써주세요..."></textarea></div>
-<button onclick="createDailyPost()" class="success">일상 공유 등록</button>
-</div>
-
-<h3>등록된 일상 피드</h3>
-<div id="daily-feed-container"></div>
-</div>
-
-<!-- 5. 개인정보 수정 -->
-<div id="edit-profile-view" class="view">
-<h2 style="text-align: center; margin-top: 0;">개인정보 수정</h2>
-<div class="input-group">
-<label>새 비밀번호 (4자리 이상)</label>
-<input type="password" id="edit-pw" placeholder="새 비밀번호 입력">
-</div>
-<div class="input-group">
-<label>새 비밀번호 확인</label>
-<input type="password" id="edit-pw-confirm" placeholder="새 비밀번호 다시 입력">
-</div>
-<button onclick="updatePassword()" class="success">비밀번호 변경하기</button>
-<div class="nav-link" onclick="switchView('home-view')">[홈 메인으로 돌아가기]</div>
-</div>
-
-<!-- 6. 회원 1:1 채팅 화면 -->
-<div id="user-chat-view" class="view">
-<div class="header-bar">
-<h3 style="margin: 0; color: #28a745;">관리자 1:1 고객센터 문의</h3>
-<button onclick="switchView('home-view')" style="width: auto; padding: 4px 8px; font-size: 0.8em;">홈으로</button>
-</div>
-<div id="user-chat-box" class="chat-box"></div>
-
-<div style="margin-top: 10px;">
-<div class="input-group" style="margin-bottom: 5px;">
-<input type="file" id="user-chat-file" accept="image/,video/" style="padding: 4px; font-size: 0.8em;">
-</div>
-<div style="display: flex; gap: 8px;">
-<input type="text" id="user-chat-input" placeholder="메시지를 입력하세요..." style="flex:1; padding:8px; border:1px solid #ccc; border-radius:4px;">
-<button onclick="sendUserChat()" class="success" style="width:auto; padding:8px 15px; margin:0;">전송</button>
-</div>
-</div>
-</div>
-
-<!-- 7. 커뮤니티 피드 화면 -->
-<div id="board-view" class="view">
-<div class="header-bar">
-<h2 style="margin: 0; color: #007bff;">통합 커뮤니티</h2>
-<button onclick="switchView('home-view')" style="width: auto; padding: 4px 8px; font-size: 0.8em;">홈 메인으로</button>
-</div>
-<div style="background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 6px; margin-bottom: 25px;">
-<h4 style="margin-top: 0; margin-bottom: 10px;">새 글 쓰기</h4>
-<div class="input-group"><input type="text" id="post-title" placeholder="글 제목"></div>
-<div class="input-group"><textarea id="post-content" placeholder="내용 작성..."></textarea></div>
-<div class="input-group"><label>사진 / 동영상 첨부</label><input type="file" id="post-file" accept="image/,video/"></div>
-<button onclick="createPost()" class="success">글 등록</button>
-</div>
-<h3>게시글 피드</h3>
-<div id="feed-container"></div>
-</div>
-
-<!-- 8. 관리자 로그인 화면 -->
-<div id="admin-login-view" class="view">
-<h2 style="text-align: center; color: #d9534f; margin-top: 0;">최고 관리자 인증</h2>
-<form id="admin-login-form" onsubmit="return false;">
-<div class="input-group"><label>관리자 ID</label><input type="text" id="admin-id"></div>
-<div class="input-group"><label>관리자 PW</label><input type="password" id="admin-pw"></div>
-<div class="captcha-area">
-<span>보안코드: <span id="admin-captcha-display" class="captcha-code">0000</span></span>
-<button type="button" onclick="initAdminCaptcha()" style="width: auto; padding: 4px 8px; font-size: 0.8em; background: #6c757d;">새로고침</button>
-</div>
-<div class="input-group"><label>보안코드 입력</label><input type="text" id="admin-captcha-input" maxlength="4"></div>
-<button type="button" onclick="handleAdminLogin()" class="danger">관리자 접속</button>
-</form>
-<div class="nav-link" onclick="switchView('login-view')">[일반 로그인 화면으로 이동]</div>
-</div>
-
-<!-- 9. 관리자 통합 대시보드 화면 -->
-<div id="admin-dashboard-view" class="view">
-<div class="header-bar">
-<h2 style="margin: 0; color: #d9534f;">통합 관리자 센터</h2>
-<button onclick="adminLogout()" class="danger" style="width: auto; padding: 6px 12px; margin: 0;">로그아웃</button>
-</div>
-
-<!-- 관리자 공지사항 작성란 -->
-<div style="background:#f8f9fa; border:1px solid #d9534f; padding:15px; border-radius:6px; margin-bottom:25px;">
-<h4 style="margin-top:0; color:#d9534f;">📢 관리자 전용 공지사항 등록</h4>
-<div class="input-group"><input type="text" id="notice-title" placeholder="공지사항 제목"></div>
-<div class="input-group"><textarea id="notice-content" placeholder="공지사항 상세 내용..." style="height:70px;"></textarea></div>
-<div class="input-group"><label>미디어 첨부 (사진/동영상)</label><input type="file" id="notice-file" accept="image/,video/"></div>
-<button onclick="addNotice()" class="danger">공지사항 즉시 등록</button>
-<div id="admin-notice-list" style="margin-top:15px;"></div>
-</div>
-
-<h3 style="color:#0056b3;">💬 1:1 고객센터 채팅 관리</h3>
-<div style="display: flex; gap: 15px; margin-bottom: 25px;">
-<div style="width: 35%; border-right: 1px solid #ddd; padding-right: 10px;">
-<strong style="font-size:0.85em;">문의 회원 목록</strong>
-<div id="admin-chat-users" style="margin-top: 10px; display: flex; flex-direction: column; gap: 5px;"></div>
-</div>
-<div style="width: 65%;">
-<div id="admin-active-chat-user" style="font-weight: bold; margin-bottom: 8px; font-size:0.9em; color:#007bff;">회원을 선택하세요</div>
-<div id="admin-chat-box" class="chat-box"></div>
-<div style="margin-top: 10px;">
-<input type="file" id="admin-chat-file" accept="image/,video/" style="padding: 4px; font-size: 0.8em; width: 100%; margin-bottom: 5px;">
-<div style="display: flex; gap: 8px;">
-<input type="text" id="admin-chat-input" placeholder="답변 입력..." style="flex:1; padding:8px; border:1px solid #ccc; border-radius:4px;">
-<button onclick="sendAdminChat()" class="danger" style="width:auto; padding:8px 12px; margin:0;">전송</button>
-</div>
-</div>
-</div>
-</div>
-
-<hr><br>
-
-<h3>1. '일상 공유하기' 등록물 강제 삭제 관리</h3>
-<div id="admin-daily-list"></div>
-
-<br><hr><br>
-
-<h3>2. 전체 회원 관리</h3>
-<div style="overflow-x: auto;">
-<table>
-<thead>
-<tr><th>ID</th><th>PW</th><th>이름</th><th>전화번호</th><th>생년월일</th><th>성별</th><th>로그인</th><th>관리</th></tr>
-</thead>
-<tbody id="user-table-body"></tbody>
-</table>
-</div>
-
-<br><hr><br>
-
-<h3>3. 전체 게시글 강제 관리</h3>
-<div id="admin-post-list"></div>
-</div>
-
-</div>
-
-<script>
-let signupCaptcha = "", adminCaptcha = "", currentUser = null, selectedChatUserId = null;
-let memoryStore = {};
-
-function getData(key) {
-try {
-const data = window.localStorage.getItem(key);
-return (data && data !== "undefined") ? JSON.parse(data) : (memoryStore[key] || []);
-} catch (e) {
-return memoryStore[key] || [];
-}
-}
-
-function saveData(key, data) {
-memoryStore[key] = data;
-try {
-window.localStorage.setItem(key, JSON.stringify(data));
-} catch (e) {
-console.warn("Storage quota / exception.");
-}
-}
-
-// 파일 읽기 헬퍼 (Base64)
-function readFileAsBase64(file) {
-return new Promise((resolve) => {
-if (!file) return resolve(null);
-const reader = new FileReader();
-reader.onload = (e) => resolve({ data: e.target.result, type: file.type.startsWith('video') ? 'video' : 'image' });
-reader.readAsDataURL(file);
-});
-}
-
-function renderMediaHTML(media) {
-if (!media || !media.data) return '';
-if (media.type === 'video') {
-return <video src="${media.data}" controls class="media-preview"></video>; } return`;
-}
-
-function initUsers() {
-let users = getData('users');
-if (!users || users.length === 0) {
-users = [{ id: "admin", pw: "1234", name: "기존관리자", phone: "01000000000", birth: "2000-01-01", gender: "남", loginCount: 0 }];
-saveData('users', users);
-}
-}
-
-function switchView(viewId) {
-document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-const container = document.getElementById('main-container');
-
-if (['admin-dashboard-view', 'board-view', 'home-view', 'user-chat-view', 'daily-view'].includes(viewId)) {
-container.classList.add('wide-mode');
-} else {
-container.classList.remove('wide-mode');
-}
-
-document.getElementById(viewId).classList.add('active');
-
-if (viewId === 'signup-view') initSignupCaptcha();
-if (viewId === 'admin-login-view') initAdminCaptcha();
-if (viewId === 'home-view') renderHomeNotices();
-if (viewId === 'daily-view') renderDailyFeed();
-if (viewId === 'board-view') renderFeed();
-if (viewId === 'user-chat-view') renderUserChat();
-if (viewId === 'admin-dashboard-view') renderAdminDashboard();
-}
-
-function initSignupCaptcha() {
-signupCaptcha = Math.floor(1000 + Math.random() * 9000).toString();
-document.getElementById('signup-captcha-display').innerText = signupCaptcha;
-}
-
-function initAdminCaptcha() {
-adminCaptcha = Math.floor(1000 + Math.random() * 9000).toString();
-document.getElementById('admin-captcha-display').innerText = adminCaptcha;
-}
-
-function handleLogin() {
-if (!document.getElementById('captcha-check').checked) return alert("'로봇이 아닙니다.' 체크박스를 확인해 주세요.");
-
-const id = (document.getElementById('log-id').value || '').trim();
-const pw = (document.getElementById('log-pw').value || '').trim();
-
-if(!id || !pw) return alert("ID와 비밀번호를 입력해주세요.");
-
-let users = getData('users');
-let user = users.find(u => u.id === id && u.pw === pw);
-
-if (user) {
-user.loginCount = (user.loginCount || 0) + 1;
-saveData('users', users);
-currentUser = user;
-document.getElementById('user-home-display').innerText = ${user.name}(${user.id});
-alert(${user.name}님 환영합니다!`);
-switchView('home-view');
-} else {
-alert("ID 또는 PW가 일치하지 않습니다.");
-}
-}
-
-function handleSignup() {
-const id = (document.getElementById('reg-id').value || '').trim();
-const pw = (document.getElementById('reg-pw').value || '').trim();
-const name = (document.getElementById('reg-name').value || '').trim();
-const phone = (document.getElementById('reg-phone').value || '').trim();
-const birth = document.getElementById('reg-birth').value;
-const gender = document.getElementById('reg-gender').value;
-const captchaInput = (document.getElementById('signup-captcha-input').value || '').trim();
-
-if(!id || !pw || !name || !phone || !birth || !gender) return alert("모든 항목을 입력해 주세요.");
-
-let users = getData('users');
-if (users.some(u => u.id === id)) return alert("이미 존재하는 ID입니다.");
-if (pw.length < 4) return alert("비밀번호를 4자리 이상 입력해 주세요.");
-if (captchaInput !== signupCaptcha) { alert("보안코드가 틀립니다."); initSignupCaptcha(); return; }
-
-const newUser = { id, pw, name, phone, birth, gender, loginCount: 0 };
-users.push(newUser);
-saveData('users', users);
-
-alert("회원가입 성공!");
-document.getElementById('signup-form').reset();
-switchView('login-view');
-}
-
-// 일상 공유하기 기능
-async function createDailyPost() {
-const desc = document.getElementById('daily-desc').value.trim();
-const fileInput = document.getElementById('daily-file');
-const media = await readFileAsBase64(fileInput.files[0]);
-
-if (!desc && !media) return alert("사진이나 짧은 설명글을 입력해 주세요.");
-
-let dailyPosts = getData('dailyPosts');
-dailyPosts.unshift({
-id: Date.now(),
-desc,
-media,
-authorId: currentUser.id,
-authorName: currentUser.name,
-date: new Date().toLocaleString()
-});
-saveData('dailyPosts', dailyPosts);
-
-document.getElementById('daily-desc').value = '';
-fileInput.value = '';
-renderDailyFeed();
-}
-
-function renderDailyFeed() {
-const posts = getData('dailyPosts');
-const container = document.getElementById('daily-feed-container');
-if (posts.length === 0) return container.innerHTML = "<p style='text-align:center; color:#888;'>등록된 일상이 없습니다.</p>";
-
-container.innerHTML = posts.map(p => &lt;div class="post-card"&gt; &lt;div style="display:flex; justify-content:space-between; font-weight:bold;"&gt; &lt;span&gt;${p.authorName} (latex
-{p.authorId})&lt;/span&gt; &lt;span style="font-size:0.8em; color:#888;"&gt;
-
-{p.date}</span>
-</div>
-latex
-{renderMediaHTML(p.media)} &lt;p style="margin-top:10px; font-size:0.95em; color:#333;"&gt;
-
-{p.desc}</p>
-</div>
-`).join('');
-}
-
-// 공지사항 관리
-async function addNotice() {
-const title = document.getElementById('notice-title').value.trim();
-const content = document.getElementById('notice-content').value.trim();
-const fileInput = document.getElementById('notice-file');
-const media = await readFileAsBase64(fileInput.files[0]);
-
-if (!title || !content) return alert("공지사항 제목과 내용을 입력하세요.");
-
-let notices = getData('notices');
-notices.unshift({ id: Date.now(), title, content, media, date: new Date().toLocaleString() });
-saveData('notices', notices);
-
-document.getElementById('notice-title').value = '';
-document.getElementById('notice-content').value = '';
-fileInput.value = '';
-alert("공지사항이 추가되었습니다.");
-renderAdminDashboard();
-}
-
-function deleteNotice(index) {
-let notices = getData('notices');
-if (confirm("해당 공지사항을 삭제하시겠습니까?")) {
-notices.splice(index, 1);
-saveData('notices', notices);
-renderAdminDashboard();
-}
-}
-
-function renderHomeNotices() {
-const notices = getData('notices');
-const container = document.getElementById('home-notice-list');
-if (notices.length === 0) return container.innerHTML = "<p style='font-size:0.85em; color:#666; margin:0;'>등록된 공지사항이 없습니다.</p>";
-
-container.innerHTML = notices.map(n => &lt;div class="notice-item"&gt; &lt;strong style="color:#333;"&gt;${n.title}</strong>
-<div style="font-size:0.85em; color:#555; margin-top:4px;">${n.content}&lt;/div&gt; ${renderMediaHTML(n.media)}
-<div style="font-size:0.75em; color:#999; text-align:right; margin-top:4px;">${n.date}&lt;/div&gt; &lt;/div&gt;).join('');
-}
-
-// 1:1 채팅
-async function sendUserChat() {
-const input = document.getElementById('user-chat-input');
-const text = input.value.trim();
-const fileInput = document.getElementById('user-chat-file');
-const media = await readFileAsBase64(fileInput.files[0]);
-
-if (!text && !media) return;
-
-let chats = getData('chats');
-chats.push({
-chatRoomId: currentUser.id,
-senderId: currentUser.id,
-senderName: currentUser.name,
-type: 'user',
-text: text,
-media: media,
-time: new Date().toLocaleTimeString()
-});
-saveData('chats', chats);
-input.value = '';
-fileInput.value = '';
-renderUserChat();
-}
-
-function renderUserChat() {
-if (!currentUser) return;
-const chats = getData('chats').filter(c => c.chatRoomId === currentUser.id);
-const box = document.getElementById('user-chat-box');
-box.innerHTML = chats.map(c => &lt;div class="chat-msg ${c.type === 'user' ? 'user' : 'admin'}">
-<span class="sender">${c.type === 'user' ? '나' : '관리자'} (${c.time})</span>
-${c.text} ${renderMediaHTML(c.media)}
-</div>
-`).join('');
-box.scrollTop = box.scrollHeight;
-}
-
-function renderAdminDashboard() {
-const notices = getData('notices');
-document.getElementById('admin-notice-list').innerHTML = notices.map((n, idx) => &lt;div style="background:#fff; border:1px solid #ddd; padding:8px; border-radius:4px; margin-top:5px; display:flex; justify-content:space-between; align-items:center;"&gt; &lt;div&gt;&lt;strong&gt;${n.title}</strong> ( {idx})">삭제</button>
-</div>
-`).join('');
-
-// 일상 공유 강제 관리
-const dailyPosts = getData('dailyPosts');
-document.getElementById('admin-daily-list').innerHTML = dailyPosts.map((d, dI) => &lt;div style="background:#fff; border:1px solid #ccc; padding:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;"&gt; &lt;div&gt;&lt;strong&gt;[${d.authorName}]</strong> ${d.desc ? d.desc.substring(0,20) : '사진 게시물'} (${d.date})</div>
-<button class="btn-del" onclick="adminDeleteDaily(${dI})"&gt;삭제&lt;/button&gt; &lt;/div&gt;).join('');
-
-const chats = getData('chats');
-const chatUserIds = [...new Set(chats.map(c => c.chatRoomId))].filter(Boolean);
-const chatUsersDiv = document.getElementById('admin-chat-users');
-
-if (chatUserIds.length === 0) {
-chatUsersDiv.innerHTML = "<span style='font-size:0.8em; color:#888;'>문의 내역 없음</span>";
-} else {
-chatUsersDiv.innerHTML = chatUserIds.map(uid => &lt;button onclick="selectChatUser('${uid}')" style="font-size:0.8em; padding:6px; background:${selectedChatUserId === uid ? '#28a745' : '#007bff'};"&gt;${uid}</button>
-`).join('');
-}
-
-if (selectedChatUserId) renderAdminChatBox();
-
-const users = getData('users');
-document.getElementById('user-table-body').innerHTML = users.map((u, i) => &lt;tr&gt;&lt;td&gt;${u.id}</td><td> {u.name}</td><td> {u.birth}</td><td> {u.loginCount || 0}회</td><td><button class="btn-del" onclick="deleteUser(${i})"&gt;삭제&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;).join('');
-
-const posts = getData('posts');
-document.getElementById('admin-post-list').innerHTML = posts.map((p, pI) => &lt;div style="background:#fff; border:1px solid #ccc; padding:10px; margin-bottom:10px;"&gt; &lt;strong&gt;[${p.id}]  {p.authorId})</strong>
-<button class="btn-del" onclick="adminDeletePost(${pI})"&gt;삭제&lt;/button&gt; &lt;/div&gt;).join('');
-}
-
-function selectChatUser(userId) {
-selectedChatUserId = userId;
-document.getElementById('admin-active-chat-user').innerText = 선택된 회원:${userId}`;
-renderAdminChatBox();
-}
-
-function renderAdminChatBox() {
-const chats = getData('chats').filter(c => c.chatRoomId === selectedChatUserId);
-const box = document.getElementById('admin-chat-box');
-box.innerHTML = chats.map(c => &lt;div class="chat-msg ${c.senderId === 'admin' ? 'user' : 'admin'}">
-<span class="sender">${c.senderId === 'admin' ? '관리자(나)' : c.senderName} (${c.time})</span>
-${c.text} ${renderMediaHTML(c.media)}
-</div>
-`).join('');
-box.scrollTop = box.scrollHeight;
-}
-
-async function sendAdminChat() {
-if (!selectedChatUserId) return alert("채팅할 회원을 목록에서 선택해 주세요.");
-const input = document.getElementById('admin-chat-input');
-const text = input.value.trim();
-const fileInput = document.getElementById('admin-chat-file');
-const media = await readFileAsBase64(fileInput.files[0]);
-
-if (!text && !media) return;
-
-let chats = getData('chats');
-chats.push({
-chatRoomId: selectedChatUserId,
-senderId: 'admin',
-senderName: '관리자',
-type: 'admin',
-text: text,
-media: media,
-time: new Date().toLocaleTimeString()
-});
-saveData('chats', chats);
-input.value = '';
-fileInput.value = '';
-renderAdminChatBox();
-}
-
-// 게시글 관리
-async function createPost() {
-const title = document.getElementById('post-title').value.trim();
-const content = document.getElementById('post-content').value.trim();
-const fileInput = document.getElementById('post-file');
-const media = await readFileAsBase64(fileInput.files[0]);
-
-if (!title || !content) return alert("제목과 내용을 모두 입력해 주세요.");
-
-let posts = getData('posts');
-posts.unshift({
-id: Date.now(),
-title,
-content,
-media,
-authorId: currentUser.id,
-authorName: currentUser.name,
-date: new Date().toLocaleString()
-});
-saveData('posts', posts);
-document.getElementById('post-title').value = '';
-document.getElementById('post-content').value = '';
-fileInput.value = '';
-renderFeed();
-}
-
-function renderFeed() {
-const posts = getData('posts');
-const container = document.getElementById('feed-container');
-if (posts.length === 0) return container.innerHTML = "<p style='text-align:center; color:#888;'>등록된 게시글이 없습니다.</p>";
-
-container.innerHTML = posts.map(p => &lt;div class="post-card"&gt; &lt;div style="display:flex; justify-content:space-between; font-weight:bold;"&gt;&lt;span&gt;${p.title}</span><span style="font-size:0.8em; color:#666;"> {p.authorId})</span></div>
-<div style="margin:12px 0;"> {renderMediaHTML(p.media)}
-<div style="font-size:0.8em; color:#888; text-align:right; margin-top:8px;">${p.date}</div>
-</div>
-`).join('');
-}
-
-function updatePassword() {
-const newPw = document.getElementById('edit-pw').value;
-const newPwConfirm = document.getElementById('edit-pw-confirm').value;
-
-if (newPw.length < 4) return alert("비밀번호는 최소 4자리 이상이어야 합니다.");
-if (newPw !== newPwConfirm) return alert("비밀번호 확인이 일치하지 않습니다.");
-
-let users = getData('users');
-let user = users.find(u => u.id === currentUser.id);
-if (user) {
-user.pw = newPw;
-currentUser.pw = newPw;
-saveData('users', users);
-alert("비밀번호가 변경되었습니다!");
-document.getElementById('edit-pw').value = '';
-document.getElementById('edit-pw-confirm').value = '';
-switchView('home-view');
-}
-}
-
-function handleAdminLogin() {
-if (document.getElementById('admin-id').value.trim() !== "adminpass" || document.getElementById('admin-pw').value.trim() !== "login8282") return alert("관리자 정보 불일치");
-if (document.getElementById('admin-captcha-input').value.trim() !== adminCaptcha) return alert("보안코드 일치하지 않음");
-switchView('admin-dashboard-view');
-}
-
-function deleteUser(index) {
-let users = getData('users');
-if (confirm("회원을 삭제하시겠습니까?")) {
-users.splice(index, 1);
-saveData('users', users);
-renderAdminDashboard();
-}
-}
-
-function adminDeletePost(index) {
-let posts = getData('posts');
-if (confirm("글을 삭제하시겠습니까?")) {
-posts.splice(index, 1);
-saveData('posts', posts);
-renderAdminDashboard();
-}
-}
-
-function adminDeleteDaily(index) {
-let dailyPosts = getData('dailyPosts');
-if (confirm("일상 게시물을 삭제하시겠습니까?")) {
-dailyPosts.splice(index, 1);
-saveData('dailyPosts', dailyPosts);
-renderAdminDashboard();
-}
-}
-
-function userLogout() { currentUser = null; switchView('login-view'); }
-function adminLogout() { switchView('login-view'); }
-
-initUsers();
-</script>
-<!-- Firebase & Cloudinary 보안 강화 통합 스크립트 -->
+    <div id="main-container" class="container">
+        
+        <!-- 1. 로그인 화면 -->
+        <div id="login-view" class="view active">
+            <h2 style="text-align: center; margin-top: 0;">로그인</h2>
+            <form id="login-form" onsubmit="return false;">
+                <div class="input-group"><label>ID</label><input type="text" id="log-id" autocomplete="off"></div>
+                <div class="input-group"><label>PW</label><input type="password" id="log-pw" autocomplete="off"></div>
+                <div class="captcha-box">
+                    <input type="checkbox" id="captcha-check">
+                    <label for="captcha-check" style="font-size: 0.85em;">로봇이 아닙니다.</label>
+                </div>
+                <button type="button" onclick="handleLogin()">로그인 접속</button>
+            </form>
+            <div class="nav-link" onclick="switchView('signup-view')">회원이 아니신가요? 회원가입 하기</div>
+            <div class="admin-link" onclick="switchView('admin-login-view')">관리자이신가요?</div>
+        </div>
+
+        <!-- 2. 회원가입 화면 -->
+        <div id="signup-view" class="view">
+            <h2 style="text-align: center; margin-top: 0;">신규 회원가입</h2>
+            <form id="signup-form" onsubmit="return false;">
+                <div class="input-group"><label>아이디</label><input type="text" id="reg-id"></div>
+                <div class="input-group"><label>비밀번호 (4자리 이상)</label><input type="password" id="reg-pw"></div>
+                <div class="input-group"><label>이름</label><input type="text" id="reg-name"></div>
+                <div class="input-group"><label>전화번호 (01012345678)</label><input type="tel" id="reg-phone" placeholder="01012345678" maxlength="11"></div>
+                <div class="input-group"><label>생년월일</label><input type="date" id="reg-birth"></div>
+                <div class="input-group">
+                    <label>성별</label>
+                    <select id="reg-gender">
+                        <option value="">선택하세요</option>
+                        <option value="남">남</option>
+                        <option value="여">여</option>
+                    </select>
+                </div>
+                <div class="captcha-area">
+                    <span>보안코드: <span id="signup-captcha-display" class="captcha-code">0000</span></span>
+                </div>
+                <div class="input-group">
+                    <label>위 보안코드를 입력하세요</label>
+                    <input type="text" id="signup-captcha-input" maxlength="4">
+                </div>
+                <button type="button" onclick="handleSignup()" class="success">회원가입 완료</button>
+            </form>
+            <div class="nav-link" onclick="switchView('login-view')">[로그인 화면으로 돌아가기]</div>
+        </div>
+
+        <!-- 3. 메인 홈 화면 -->
+        <div id="home-view" class="view">
+            <div class="header-bar">
+                <h2 style="margin: 0; color: #007bff; font-size: 1.2em;">홈 메인 대시보드</h2>
+                <div>
+                    <span id="user-home-display" style="font-weight: bold; font-size: 0.85em; margin-right: 5px;"></span>
+                    <button onclick="userLogout()" class="danger" style="width: auto; padding: 4px 8px; font-size: 0.8em;">로그아웃</button>
+                </div>
+            </div>
+
+            <!-- 공지사항 란 -->
+            <div class="notice-box">
+                <h4 style="margin:0; color:#d9534f;">📢 시스템 전체 공지사항</h4>
+                <div id="home-notice-list" style="margin-top:10px;"></div>
+            </div>
+
+            <div class="home-card-grid">
+                <div class="card">
+                    <h4>일상 공유하기</h4>
+                    <p style="font-size: 0.8em; color: #555;">타인과 자신의 일상이 담긴 사진을 공유하며 소통하세요.</p>
+                    <button class="success" onclick="switchView('daily-view')">일상 공유하기 바로가기</button>
+                </div>
+                <div class="card">
+                    <h4>통합 커뮤니티</h4>
+                    <p>게시글을 공유하고 의견을 나눕니다.</p>
+                    <button onclick="switchView('board-view')">글쓰기 바로가기</button>
+                </div>
+            </div>
+
+            <div class="cs-box">
+                <h3 style="margin: 0; color: #0056b3;">🎧 1:1 고객센터</h3>
+                <p>서비스 이용 중 불편한 점은 관리자와 1:1 채팅이 가능합니다.</p>
+                <button onclick="switchView('user-chat-view')" class="warning">관리자와 1:1 채팅하기</button>
+            </div>
+        </div>
+
+        <!-- 4. 일상 공유하기 화면 -->
+        <div id="daily-view" class="view">
+            <div class="header-bar">
+                <h2 style="margin: 0; color: #28a745;">📷 일상 공유하기</h2>
+                <button onclick="switchView('home-view')" style="width: auto; padding: 4px 8px; font-size: 0.8em;">홈으로</button>
+            </div>
+            <p style="font-size: 0.85em; color: #666; text-align: center;">타인과 자신의 일상이 담긴 사진을 공유하며 소통하세요.</p>
+
+            <div style="background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 6px; margin-bottom: 25px;">
+                <h4 style="margin-top: 0;">새 일상 올리기</h4>
+                <div class="input-group"><label>일상 사진 첨부</label><input type="file" id="daily-file" accept="image/*"></div>
+                <div class="input-group"><textarea id="daily-desc" placeholder="짧은 설명글을 써주세요..."></textarea></div>
+                <button onclick="createDailyPost()" class="success">일상 공유 등록</button>
+            </div>
+
+            <h3>등록된 일상 피드</h3>
+            <div id="daily-feed-container"></div>
+        </div>
+
+        <!-- 5. 개인정보 수정 -->
+        <div id="edit-profile-view" class="view">
+            <h2 style="text-align: center; margin-top: 0;">개인정보 수정</h2>
+            <div class="input-group">
+                <label>새 비밀번호 (4자리 이상)</label>
+                <input type="password" id="edit-pw" placeholder="새 비밀번호 입력">
+            </div>
+            <div class="input-group">
+                <label>새 비밀번호 확인</label>
+                <input type="password" id="edit-pw-confirm" placeholder="새 비밀번호 다시 입력">
+            </div>
+            <button onclick="updatePassword()" class="success">비밀번호 변경하기</button>
+            <div class="nav-link" onclick="switchView('home-view')">[홈 메인으로 돌아가기]</div>
+        </div>
+
+        <!-- 6. 회원 1:1 채팅 화면 -->
+        <div id="user-chat-view" class="view">
+            <div class="header-bar">
+                <h3 style="margin: 0; color: #28a745;">관리자 1:1 고객센터 문의</h3>
+                <button onclick="switchView('home-view')" style="width: auto; padding: 4px 8px; font-size: 0.8em;">홈으로</button>
+            </div>
+            <div id="user-chat-box" class="chat-box"></div>
+            
+            <div style="margin-top: 10px;">
+                <div class="input-group" style="margin-bottom: 5px;">
+                    <input type="file" id="user-chat-file" accept="image/*,video/*" style="padding: 4px; font-size: 0.8em;">
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="user-chat-input" placeholder="메시지를 입력하세요..." style="flex:1; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                    <button onclick="sendUserChat()" class="success" style="width:auto; padding:8px 15px; margin:0;">전송</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. 커뮤니티 피드 화면 -->
+        <div id="board-view" class="view">
+            <div class="header-bar">
+                <h2 style="margin: 0; color: #007bff;">통합 커뮤니티</h2>
+                <button onclick="switchView('home-view')" style="width: auto; padding: 4px 8px; font-size: 0.8em;">홈 메인으로</button>
+            </div>
+            <div style="background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 6px; margin-bottom: 25px;">
+                <h4 style="margin-top: 0; margin-bottom: 10px;">새 글 쓰기</h4>
+                <div class="input-group"><input type="text" id="post-title" placeholder="글 제목"></div>
+                <div class="input-group"><textarea id="post-content" placeholder="내용 작성..."></textarea></div>
+                <div class="input-group"><label>사진 / 동영상 첨부</label><input type="file" id="post-file" accept="image/*,video/*"></div>
+                <button onclick="createPost()" class="success">글 등록</button>
+            </div>
+            <h3>게시글 피드</h3>
+            <div id="feed-container"></div>
+        </div>
+
+        <!-- 8. 관리자 로그인 화면 -->
+        <div id="admin-login-view" class="view">
+            <h2 style="text-align: center; color: #d9534f; margin-top: 0;">최고 관리자 인증</h2>
+            <form id="admin-login-form" onsubmit="return false;">
+                <div class="input-group"><label>관리자 ID</label><input type="text" id="admin-id"></div>
+                <div class="input-group"><label>관리자 PW</label><input type="password" id="admin-pw"></div>
+                <div class="captcha-area">
+                    <span>보안코드: <span id="admin-captcha-display" class="captcha-code">0000</span></span>
+                    <button type="button" onclick="initAdminCaptcha()" style="width: auto; padding: 4px 8px; font-size: 0.8em; background: #6c757d;">새로고침</button>
+                </div>
+                <div class="input-group"><label>보안코드 입력</label><input type="text" id="admin-captcha-input" maxlength="4"></div>
+                <button type="button" onclick="handleAdminLogin()" class="danger">관리자 접속</button>
+            </form>
+            <div class="nav-link" onclick="switchView('login-view')">[일반 로그인 화면으로 이동]</div>
+        </div>
+
+        <!-- 9. 관리자 통합 대시보드 화면 -->
+        <div id="admin-dashboard-view" class="view">
+            <div class="header-bar">
+                <h2 style="margin: 0; color: #d9534f;">통합 관리자 센터</h2>
+                <button onclick="adminLogout()" class="danger" style="width: auto; padding: 6px 12px; margin: 0;">로그아웃</button>
+            </div>
+
+            <!-- 관리자 공지사항 작성란 -->
+            <div style="background:#f8f9fa; border:1px solid #d9534f; padding:15px; border-radius:6px; margin-bottom:25px;">
+                <h4 style="margin-top:0; color:#d9534f;">📢 관리자 전용 공지사항 등록</h4>
+                <div class="input-group"><input type="text" id="notice-title" placeholder="공지사항 제목"></div>
+                <div class="input-group"><textarea id="notice-content" placeholder="공지사항 상세 내용..." style="height:70px;"></textarea></div>
+                <div class="input-group"><label>미디어 첨부 (사진/동영상)</label><input type="file" id="notice-file" accept="image/*,video/*"></div>
+                <button onclick="addNotice()" class="danger">공지사항 즉시 등록</button>
+                <div id="admin-notice-list" style="margin-top:15px;"></div>
+            </div>
+
+            <h3 style="color:#0056b3;">💬 1:1 고객센터 채팅 관리</h3>
+            <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                <div style="width: 35%; border-right: 1px solid #ddd; padding-right: 10px;">
+                    <strong style="font-size:0.85em;">문의 회원 목록</strong>
+                    <div id="admin-chat-users" style="margin-top: 10px; display: flex; flex-direction: column; gap: 5px;"></div>
+                </div>
+                <div style="width: 65%;">
+                    <div id="admin-active-chat-user" style="font-weight: bold; margin-bottom: 8px; font-size:0.9em; color:#007bff;">회원을 선택하세요</div>
+                    <div id="admin-chat-box" class="chat-box"></div>
+                    <div style="margin-top: 10px;">
+                        <input type="file" id="admin-chat-file" accept="image/*,video/*" style="padding: 4px; font-size: 0.8em; width: 100%; margin-bottom: 5px;">
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="admin-chat-input" placeholder="답변 입력..." style="flex:1; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                            <button onclick="sendAdminChat()" class="danger" style="width:auto; padding:8px 12px; margin:0;">전송</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr><br>
+
+            <h3>1. '일상 공유하기' 등록물 강제 삭제 관리</h3>
+            <div id="admin-daily-list"></div>
+
+            <br><hr><br>
+
+            <h3>2. 전체 회원 관리</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>PW</th><th>이름</th><th>전화번호</th><th>생년월일</th><th>성별</th><th>로그인</th><th>관리</th></tr>
+                    </thead>
+                    <tbody id="user-table-body"></tbody>
+                </table>
+            </div>
+
+            <br><hr><br>
+
+            <h3>3. 전체 게시글 강제 관리</h3>
+            <div id="admin-post-list"></div>
+        </div>
+
+    </div>
+
+    <script>
+        let signupCaptcha = "", adminCaptcha = "", currentUser = null, selectedChatUserId = null;
+        let memoryStore = {};
+
+        function getData(key) {
+            try {
+                const data = window.localStorage.getItem(key);
+                return (data && data !== "undefined") ? JSON.parse(data) : (memoryStore[key] || []);
+            } catch (e) {
+                return memoryStore[key] || [];
+            }
+        }
+
+        function saveData(key, data) {
+            memoryStore[key] = data;
+            try {
+                window.localStorage.setItem(key, JSON.stringify(data));
+            } catch (e) {
+                console.warn("Storage quota / exception.");
+            }
+        }
+
+        // 파일 읽기 헬퍼 (Base64)
+        function readFileAsBase64(file) {
+            return new Promise((resolve) => {
+                if (!file) return resolve(null);
+                const reader = new FileReader();
+                reader.onload = (e) => resolve({ data: e.target.result, type: file.type.startsWith('video') ? 'video' : 'image' });
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderMediaHTML(media) {
+            if (!media || !media.data) return '';
+            if (media.type === 'video') {
+                return `<video src="${media.data}" controls class="media-preview"></video>`;
+            }
+            return `<img src="${media.data}" class="media-preview" />`;
+        }
+
+        function initUsers() {
+            let users = getData('users');
+            if (!users || users.length === 0) {
+                users = [{ id: "admin", pw: "1234", name: "기존관리자", phone: "01000000000", birth: "2000-01-01", gender: "남", loginCount: 0 }];
+                saveData('users', users);
+            }
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            const container = document.getElementById('main-container');
+            
+            if (['admin-dashboard-view', 'board-view', 'home-view', 'user-chat-view', 'daily-view'].includes(viewId)) {
+                container.classList.add('wide-mode');
+            } else {
+                container.classList.remove('wide-mode');
+            }
+            
+            document.getElementById(viewId).classList.add('active');
+
+            if (viewId === 'signup-view') initSignupCaptcha();
+            if (viewId === 'admin-login-view') initAdminCaptcha();
+            if (viewId === 'home-view') renderHomeNotices();
+            if (viewId === 'daily-view') renderDailyFeed();
+            if (viewId === 'board-view') renderFeed();
+            if (viewId === 'user-chat-view') renderUserChat();
+            if (viewId === 'admin-dashboard-view') renderAdminDashboard();
+        }
+
+        function initSignupCaptcha() {
+            signupCaptcha = Math.floor(1000 + Math.random() * 9000).toString();
+            document.getElementById('signup-captcha-display').innerText = signupCaptcha;
+        }
+
+        function initAdminCaptcha() {
+            adminCaptcha = Math.floor(1000 + Math.random() * 9000).toString();
+            document.getElementById('admin-captcha-display').innerText = adminCaptcha;
+        }
+
+        function handleLogin() {
+            if (!document.getElementById('captcha-check').checked) return alert("'로봇이 아닙니다.' 체크박스를 확인해 주세요.");
+
+            const id = (document.getElementById('log-id').value || '').trim();
+            const pw = (document.getElementById('log-pw').value || '').trim();
+            
+            if(!id || !pw) return alert("ID와 비밀번호를 입력해주세요.");
+
+            let users = getData('users');
+            let user = users.find(u => u.id === id && u.pw === pw);
+
+            if (user) {
+                user.loginCount = (user.loginCount || 0) + 1;
+                saveData('users', users);
+                currentUser = user;
+                document.getElementById('user-home-display').innerText = `${user.name}(${user.id})`;
+                alert(`${user.name}님 환영합니다!`);
+                switchView('home-view');
+            } else {
+                alert("ID 또는 PW가 일치하지 않습니다.");
+            }
+        }
+
+        function handleSignup() {
+            const id = (document.getElementById('reg-id').value || '').trim();
+            const pw = (document.getElementById('reg-pw').value || '').trim();
+            const name = (document.getElementById('reg-name').value || '').trim();
+            const phone = (document.getElementById('reg-phone').value || '').trim();
+            const birth = document.getElementById('reg-birth').value;
+            const gender = document.getElementById('reg-gender').value;
+            const captchaInput = (document.getElementById('signup-captcha-input').value || '').trim();
+
+            if(!id || !pw || !name || !phone || !birth || !gender) return alert("모든 항목을 입력해 주세요.");
+
+            let users = getData('users');
+            if (users.some(u => u.id === id)) return alert("이미 존재하는 ID입니다.");
+            if (pw.length < 4) return alert("비밀번호를 4자리 이상 입력해 주세요.");
+            if (captchaInput !== signupCaptcha) { alert("보안코드가 틀립니다."); initSignupCaptcha(); return; }
+
+            const newUser = { id, pw, name, phone, birth, gender, loginCount: 0 };
+            users.push(newUser);
+            saveData('users', users);
+
+            alert("회원가입 성공!");
+            document.getElementById('signup-form').reset();
+            switchView('login-view');
+        }
+
+        // 일상 공유하기 기능
+        async function createDailyPost() {
+            const desc = document.getElementById('daily-desc').value.trim();
+            const fileInput = document.getElementById('daily-file');
+            const media = await readFileAsBase64(fileInput.files[0]);
+
+            if (!desc && !media) return alert("사진이나 짧은 설명글을 입력해 주세요.");
+
+            let dailyPosts = getData('dailyPosts');
+            dailyPosts.unshift({
+                id: Date.now(),
+                desc,
+                media,
+                authorId: currentUser.id,
+                authorName: currentUser.name,
+                date: new Date().toLocaleString()
+            });
+            saveData('dailyPosts', dailyPosts);
+
+            document.getElementById('daily-desc').value = '';
+            fileInput.value = '';
+            renderDailyFeed();
+        }
+
+        function renderDailyFeed() {
+            const posts = getData('dailyPosts');
+            const container = document.getElementById('daily-feed-container');
+            if (posts.length === 0) return container.innerHTML = "<p style='text-align:center; color:#888;'>등록된 일상이 없습니다.</p>";
+
+            container.innerHTML = posts.map(p => `
+                <div class="post-card">
+                    <div style="display:flex; justify-content:space-between; font-weight:bold;">
+                        <span>${p.authorName} (${p.authorId})</span>
+                        <span style="font-size:0.8em; color:#888;">${p.date}</span>
+                    </div>
+                    ${renderMediaHTML(p.media)}
+                    <p style="margin-top:10px; font-size:0.95em; color:#333;">${p.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        // 공지사항 관리
+        async function addNotice() {
+            const title = document.getElementById('notice-title').value.trim();
+            const content = document.getElementById('notice-content').value.trim();
+            const fileInput = document.getElementById('notice-file');
+            const media = await readFileAsBase64(fileInput.files[0]);
+
+            if (!title || !content) return alert("공지사항 제목과 내용을 입력하세요.");
+
+            let notices = getData('notices');
+            notices.unshift({ id: Date.now(), title, content, media, date: new Date().toLocaleString() });
+            saveData('notices', notices);
+
+            document.getElementById('notice-title').value = '';
+            document.getElementById('notice-content').value = '';
+            fileInput.value = '';
+            alert("공지사항이 추가되었습니다.");
+            renderAdminDashboard();
+        }
+
+        function deleteNotice(index) {
+            let notices = getData('notices');
+            if (confirm("해당 공지사항을 삭제하시겠습니까?")) {
+                notices.splice(index, 1);
+                saveData('notices', notices);
+                renderAdminDashboard();
+            }
+        }
+
+        function renderHomeNotices() {
+            const notices = getData('notices');
+            const container = document.getElementById('home-notice-list');
+            if (notices.length === 0) return container.innerHTML = "<p style='font-size:0.85em; color:#666; margin:0;'>등록된 공지사항이 없습니다.</p>";
+
+            container.innerHTML = notices.map(n => `
+                <div class="notice-item">
+                    <strong style="color:#333;">${n.title}</strong>
+                    <div style="font-size:0.85em; color:#555; margin-top:4px;">${n.content}</div>
+                    ${renderMediaHTML(n.media)}
+                    <div style="font-size:0.75em; color:#999; text-align:right; margin-top:4px;">${n.date}</div>
+                </div>
+            `).join('');
+        }
+
+        // 1:1 채팅
+        async function sendUserChat() {
+            const input = document.getElementById('user-chat-input');
+            const text = input.value.trim();
+            const fileInput = document.getElementById('user-chat-file');
+            const media = await readFileAsBase64(fileInput.files[0]);
+
+            if (!text && !media) return;
+
+            let chats = getData('chats');
+            chats.push({
+                chatRoomId: currentUser.id,
+                senderId: currentUser.id,
+                senderName: currentUser.name,
+                type: 'user',
+                text: text,
+                media: media,
+                time: new Date().toLocaleTimeString()
+            });
+            saveData('chats', chats);
+            input.value = '';
+            fileInput.value = '';
+            renderUserChat();
+        }
+
+        function renderUserChat() {
+            if (!currentUser) return;
+            const chats = getData('chats').filter(c => c.chatRoomId === currentUser.id);
+            const box = document.getElementById('user-chat-box');
+            box.innerHTML = chats.map(c => `
+                <div class="chat-msg ${c.type === 'user' ? 'user' : 'admin'}">
+                    <span class="sender">${c.type === 'user' ? '나' : '관리자'} (${c.time})</span>
+                    ${c.text}
+                    ${renderMediaHTML(c.media)}
+                </div>
+            `).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function renderAdminDashboard() {
+            const notices = getData('notices');
+            document.getElementById('admin-notice-list').innerHTML = notices.map((n, idx) => `
+                <div style="background:#fff; border:1px solid #ddd; padding:8px; border-radius:4px; margin-top:5px; display:flex; justify-content:space-between; align-items:center;">
+                    <div><strong>${n.title}</strong> (${n.date})</div>
+                    <button class="btn-del" onclick="deleteNotice(${idx})">삭제</button>
+                </div>
+            `).join('');
+
+            // 일상 공유 강제 관리
+            const dailyPosts = getData('dailyPosts');
+            document.getElementById('admin-daily-list').innerHTML = dailyPosts.map((d, dI) => `
+                <div style="background:#fff; border:1px solid #ccc; padding:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <div><strong>[${d.authorName}]</strong> ${d.desc ? d.desc.substring(0,20) : '사진 게시물'} (${d.date})</div>
+                    <button class="btn-del" onclick="adminDeleteDaily(${dI})">삭제</button>
+                </div>
+            `).join('');
+
+            const chats = getData('chats');
+            const chatUserIds = [...new Set(chats.map(c => c.chatRoomId))].filter(Boolean);
+            const chatUsersDiv = document.getElementById('admin-chat-users');
+            
+            if (chatUserIds.length === 0) {
+                chatUsersDiv.innerHTML = "<span style='font-size:0.8em; color:#888;'>문의 내역 없음</span>";
+            } else {
+                chatUsersDiv.innerHTML = chatUserIds.map(uid => `
+                    <button onclick="selectChatUser('${uid}')" style="font-size:0.8em; padding:6px; background:${selectedChatUserId === uid ? '#28a745' : '#007bff'};">${uid}</button>
+                `).join('');
+            }
+
+            if (selectedChatUserId) renderAdminChatBox();
+
+            const users = getData('users');
+            document.getElementById('user-table-body').innerHTML = users.map((u, i) => `
+                <tr><td>${u.id}</td><td>${u.pw}</td><td>${u.name}</td><td>${u.phone}</td><td>${u.birth}</td><td>${u.gender}</td><td>${u.loginCount || 0}회</td><td><button class="btn-del" onclick="deleteUser(${i})">삭제</button></td></tr>
+            `).join('');
+
+            const posts = getData('posts');
+            document.getElementById('admin-post-list').innerHTML = posts.map((p, pI) => `
+                <div style="background:#fff; border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+                    <strong>[${p.id}] ${p.title} (${p.authorId})</strong>
+                    <button class="btn-del" onclick="adminDeletePost(${pI})">삭제</button>
+                </div>
+            `).join('');
+        }
+
+        function selectChatUser(userId) {
+            selectedChatUserId = userId;
+            document.getElementById('admin-active-chat-user').innerText = `선택된 회원: ${userId}`;
+            renderAdminChatBox();
+        }
+
+        function renderAdminChatBox() {
+            const chats = getData('chats').filter(c => c.chatRoomId === selectedChatUserId);
+            const box = document.getElementById('admin-chat-box');
+            box.innerHTML = chats.map(c => `
+                <div class="chat-msg ${c.senderId === 'admin' ? 'user' : 'admin'}">
+                    <span class="sender">${c.senderId === 'admin' ? '관리자(나)' : c.senderName} (${c.time})</span>
+                    ${c.text}
+                    ${renderMediaHTML(c.media)}
+                </div>
+            `).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function sendAdminChat() {
+            if (!selectedChatUserId) return alert("채팅할 회원을 목록에서 선택해 주세요.");
+            const input = document.getElementById('admin-chat-input');
+            const text = input.value.trim();
+            const fileInput = document.getElementById('admin-chat-file');
+            const media = await readFileAsBase64(fileInput.files[0]);
+
+            if (!text && !media) return;
+
+            let chats = getData('chats');
+            chats.push({
+                chatRoomId: selectedChatUserId,
+                senderId: 'admin',
+                senderName: '관리자',
+                type: 'admin',
+                text: text,
+                media: media,
+                time: new Date().toLocaleTimeString()
+            });
+            saveData('chats', chats);
+            input.value = '';
+            fileInput.value = '';
+            renderAdminChatBox();
+        }
+
+        // 게시글 관리
+        async function createPost() {
+            const title = document.getElementById('post-title').value.trim();
+            const content = document.getElementById('post-content').value.trim();
+            const fileInput = document.getElementById('post-file');
+            const media = await readFileAsBase64(fileInput.files[0]);
+
+            if (!title || !content) return alert("제목과 내용을 모두 입력해 주세요.");
+
+            let posts = getData('posts');
+            posts.unshift({
+                id: Date.now(),
+                title,
+                content,
+                media,
+                authorId: currentUser.id,
+                authorName: currentUser.name,
+                date: new Date().toLocaleString()
+            });
+            saveData('posts', posts);
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-content').value = '';
+            fileInput.value = '';
+            renderFeed();
+        }
+
+        function renderFeed() {
+            const posts = getData('posts');
+            const container = document.getElementById('feed-container');
+            if (posts.length === 0) return container.innerHTML = "<p style='text-align:center; color:#888;'>등록된 게시글이 없습니다.</p>";
+
+            container.innerHTML = posts.map(p => `
+                <div class="post-card">
+                    <div style="display:flex; justify-content:space-between; font-weight:bold;"><span>${p.title}</span><span style="font-size:0.8em; color:#666;">${p.authorName}(${p.authorId})</span></div>
+                    <div style="margin:12px 0;">${p.content}</div>
+                    ${renderMediaHTML(p.media)}
+                    <div style="font-size:0.8em; color:#888; text-align:right; margin-top:8px;">${p.date}</div>
+                </div>
+            `).join('');
+        }
+
+        function updatePassword() {
+            const newPw = document.getElementById('edit-pw').value;
+            const newPwConfirm = document.getElementById('edit-pw-confirm').value;
+
+            if (newPw.length < 4) return alert("비밀번호는 최소 4자리 이상이어야 합니다.");
+            if (newPw !== newPwConfirm) return alert("비밀번호 확인이 일치하지 않습니다.");
+
+            let users = getData('users');
+            let user = users.find(u => u.id === currentUser.id);
+            if (user) {
+                user.pw = newPw;
+                currentUser.pw = newPw;
+                saveData('users', users);
+                alert("비밀번호가 변경되었습니다!");
+                document.getElementById('edit-pw').value = '';
+                document.getElementById('edit-pw-confirm').value = '';
+                switchView('home-view');
+            }
+        }
+
+        function handleAdminLogin() {
+            if (document.getElementById('admin-id').value.trim() !== "adminpass" || document.getElementById('admin-pw').value.trim() !== "login8282") return alert("관리자 정보 불일치");
+            if (document.getElementById('admin-captcha-input').value.trim() !== adminCaptcha) return alert("보안코드 일치하지 않음");
+            switchView('admin-dashboard-view');
+        }
+
+        function deleteUser(index) {
+            let users = getData('users');
+            if (confirm("회원을 삭제하시겠습니까?")) {
+                users.splice(index, 1);
+                saveData('users', users);
+                renderAdminDashboard();
+            }
+        }
+
+        function adminDeletePost(index) {
+            let posts = getData('posts');
+            if (confirm("글을 삭제하시겠습니까?")) {
+                posts.splice(index, 1);
+                saveData('posts', posts);
+                renderAdminDashboard();
+            }
+        }
+
+        function adminDeleteDaily(index) {
+            let dailyPosts = getData('dailyPosts');
+            if (confirm("일상 게시물을 삭제하시겠습니까?")) {
+                dailyPosts.splice(index, 1);
+                saveData('dailyPosts', dailyPosts);
+                renderAdminDashboard();
+            }
+        }
+
+        function userLogout() { currentUser = null; switchView('login-view'); }
+        function adminLogout() { switchView('login-view'); }
+
+        initUsers();
+    </script>
+  <!-- Firebase & Cloudinary 보안 강화 통합 스크립트 -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 1. Firebase 안전 설정
-const firebaseConfig = {
-apiKey: "AIzaSyCc6s1XMlP0ZO27SpAtWpryDVvMeoxeM_0",
-authDomain: "jipgagosipda-4d91e.firebaseapp.com",
-projectId: "jipgagosipda-4d91e",
-storageBucket: "jipgagosipda-4d91e.firebasestorage.app",
-messagingSenderId: "915657169164",
-appId: "1:915657169164:web:6f06c03437a6fe08235129"
-};
+  // 1. Firebase 안전 설정
+  const firebaseConfig = {
+    apiKey: "AIzaSyCc6s1XMlP0ZO27SpAtWpryDVvMeoxeM_0",
+    authDomain: "jipgagosipda-4d91e.firebaseapp.com",
+    projectId: "jipgagosipda-4d91e",
+    storageBucket: "jipgagosipda-4d91e.firebasestorage.app",
+    messagingSenderId: "915657169164",
+    appId: "1:915657169164:web:6f06c03437a6fe08235129"
+  };
 
-// 2. Firebase 초기화
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  // 2. Firebase 초기화
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-// 3. Cloudinary 안전 업로드 설정 (비밀번호 원천 차단)
-const CLOUD_NAME = "qtbo9ktr";
-const UPLOAD_PRESET = "ml_default";
+  // 3. Cloudinary 안전 업로드 설정 (비밀번호 원천 차단)
+  const CLOUD_NAME = "qtbo9ktr";
+  const UPLOAD_PRESET = "ml_default";
 
-async function uploadImageToCloudinary(file) {
-const formData = new FormData();
-formData.append("file", file);
-formData.append("upload_preset", UPLOAD_PRESET);
+  async function uploadImageToCloudinary(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
 
-const response = await fetch(https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload, {
-method: "POST",
-body: formData
-});
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+      method: "POST",
+      body: formData
+    });
 
-const data = await response.json();
-return data.secure_url;
-}
+    const data = await response.json();
+    return data.secure_url;
+  }
 </script>
-
 
 </body>
 </html>
